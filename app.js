@@ -18,6 +18,13 @@ app.use(function(req, res, next) {
 // list all swagger document urls
 var listUrl = config.get("list_url");
 
+function addBasePath(basePath, paths) {
+  for (key in paths) {
+    paths[basePath + key] = paths[key];
+    delete paths[key];
+  }
+}
+
 // general infor of your application
 var info = config.get("info");
 app.get('/docs', function(req, res) {
@@ -29,6 +36,8 @@ app.get('/docs', function(req, res) {
         var ret = data.reduce(function(a, i){
             if (!a) {
                 a = i;
+
+                addBasePath(i.basePath, a.paths);
             }
             else{
                 // combines paths
@@ -39,16 +48,19 @@ app.get('/docs', function(req, res) {
                 for (key in i.definitions){
                     a.definitions[key] = i.definitions[key];
                 }
+                
+                addBasePath(i.basePath, a.paths);
             }
             return a;
         }, false);
         ret.info = info;
-        ret.host = null;
+        ret.host = config.get("host");
         ret.basePath = null;
         ret.schemes = schemes;
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(ret));
-    }); 
+    })
+    .catch(console.error); 
 });
 var proxy = httpProxy.createProxyServer();
 
