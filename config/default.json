@@ -1,14 +1,14 @@
 {
   "list_url": [
     {
-      "docs": "",
-      "base_path": "",
-      "route_match": [""]
+      "docs": "https://host.com/swagger.json",
+      "base_path": "https://host.com/order",
+      "route_match": []
     }
   ],
   "schemes": ["https"],
-  "host": "host.com",
-  "info": { "title": "Example API", "version": "1.0" },
+  "host": "api.host.com",
+  "info": { "title": "Exemple API", "version": "1.0" },
   "port": 3000
 }
 

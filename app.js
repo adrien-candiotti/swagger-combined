@@ -18,11 +18,12 @@ app.use(function(req, res, next) {
 // list all swagger document urls
 var listUrl = config.get("list_url");
 
-function addBasePath(basePath, paths) {
-  for (key in paths) {
-    paths[basePath + key] = paths[key];
-    delete paths[key];
+function addBasePath(definition) {
+  for (key in definition.paths) {
+    definition.paths[definition.basePath + key] = definition.paths[key];
+    delete definition.paths[key];
   }
+  return definition;
 }
 
 // general infor of your application
@@ -33,25 +34,23 @@ app.get('/docs', function(req, res) {
         schemes = config.get('schemes', false);
     }
     getApis(listUrl).then(function(data){
-        var ret = data.reduce(function(a, i){
-            if (!a) {
-                a = i;
+        data = data.map(addBasePath);
 
-                addBasePath(i.basePath, a.paths);
+        var ret = data.reduce(function(previous, current){
+            if (!previous) {
+                previous = current;
             }
             else{
                 // combines paths
-                for (key in i.paths){
-                    a.paths[key] = i.paths[key];
+                for (key in current.paths){
+                    previous.paths[key] = current.paths[key];
                 }
                 // combines definitions
-                for (key in i.definitions){
-                    a.definitions[key] = i.definitions[key];
+                for (key in current.definitions){
+                    previous.definitions[key] = current.definitions[key];
                 }
-                
-                addBasePath(i.basePath, a.paths);
             }
-            return a;
+            return previous;
         }, false);
         ret.info = info;
         ret.host = config.get("host");
