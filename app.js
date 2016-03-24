@@ -52,7 +52,7 @@ app.get('/docs', function(req, res) {
         schemes = config.get('schemes', false);
     }
     getApis(listUrl).then(function(data){
-        data = data.map(addBasePath);
+//        data = data.map(addBasePath);
 				data = data.map(addTag);
 
 				var tags = data.map(extractTag);
