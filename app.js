@@ -40,7 +40,6 @@ function addTag(definition) {
     for (method in definition.paths[key]) {
 			definition.paths[key][method].tags = [tag];
 		}
-		console.log(definition.paths[key]);
   }
   return definition;
 }
@@ -77,7 +76,7 @@ app.get('/docs', function(req, res) {
         ret.tags = tags;
         ret.info = info;
         ret.host = config.get("host");
-        ret.basePath = null;
+        ret.basePath = config.get("basePath");
         ret.schemes = schemes;
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(ret));
