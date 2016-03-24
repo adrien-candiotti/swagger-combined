@@ -26,6 +26,25 @@ function addBasePath(definition) {
   return definition;
 }
 
+function extractTag(definition) {
+	var tag = definition.basePath.slice(1);
+	return {
+		"name": tag,
+		"description": definition.info.title
+	};
+}
+
+function addTag(definition) {
+	var tag = definition.basePath.slice(1);
+  for (key in definition.paths) {
+    for (method in definition.paths[key]) {
+			definition.paths[key][method].tags = [tag];
+		}
+		console.log(definition.paths[key]);
+  }
+  return definition;
+}
+
 // general infor of your application
 var info = config.get("info");
 app.get('/docs', function(req, res) {
@@ -35,6 +54,9 @@ app.get('/docs', function(req, res) {
     }
     getApis(listUrl).then(function(data){
         data = data.map(addBasePath);
+				data = data.map(addTag);
+
+				var tags = data.map(extractTag);
 
         var ret = data.reduce(function(previous, current){
             if (!previous) {
@@ -52,6 +74,7 @@ app.get('/docs', function(req, res) {
             }
             return previous;
         }, false);
+        ret.tags = tags;
         ret.info = info;
         ret.host = config.get("host");
         ret.basePath = null;
