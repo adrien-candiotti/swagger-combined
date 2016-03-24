@@ -1,14 +1,14 @@
 {
   "list_url": [
     {
-      "docs": "https://api4.tactill.com/order/swagger.json",
-      "base_path": "https://api4.tactill.com/order",
-      "route_match": ["/order*"]
+      "docs": "",
+      "base_path": "",
+      "route_match": [""]
     }
   ],
   "schemes": ["https"],
-  "host": "api4.tactill.com",
-  "info": { "title": "Tactill API", "version": "1.0" },
+  "host": "host.com",
+  "info": { "title": "Example API", "version": "1.0" },
   "port": 3000
 }
 
