@@ -8,6 +8,27 @@ var https = require('https');
 var http = require('http');
 var url = require('url');
 
+function addHost(config) {
+  var hostURL = process.env.HOST_URL || config.get('hostURL');
+
+  config.list_url.forEach(function(url_definition) {
+    url_definition.docs = hostURL + url_definition.docs;
+    url_definition.base_path = hostURL + url_definition.base_path;
+  });
+
+  config.basePath = hostURL;
+  config.host = hostURL.split('/')[2];
+
+  return (config);
+}
+
+// We update the configuration based on the host found
+// in configuration or in the env variables
+config = addHost(config);
+
+var util = require('util');
+console.log(util.inspect(config, null, 4));
+
 // cross origin
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -51,6 +72,7 @@ app.get('/docs', function(req, res) {
     if (config.has('schemes')) {
         schemes = config.get('schemes', false);
     }
+
     getApis(listUrl).then(function(data){
         data = data.map(addBasePath);
 				data = data.map(addTag);
@@ -75,7 +97,7 @@ app.get('/docs', function(req, res) {
         }, false);
         ret.tags = tags;
         ret.info = info;
-        ret.host = config.get("host");
+        ret.host = process.env.HOST || config.get("host");
         ret.basePath = null;
         ret.schemes = schemes;
         res.setHeader('Content-Type', 'application/json');
@@ -165,4 +187,3 @@ var getApis = function(urls){
     });
     return q.all(the_promises);
 }
-
