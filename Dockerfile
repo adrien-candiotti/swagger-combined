@@ -8,4 +8,4 @@ RUN npm install
 ADD . /build
 
 # run app
-CMD ["node", "app.js"]
+CMD ["sh", "start.sh"]
