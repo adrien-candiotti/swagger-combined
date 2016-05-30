@@ -11,14 +11,16 @@ var url = require('url');
 function addHost(config) {
   var hostURL = process.env.HOST_URL || config.get('hostURL');
 
-  config.list_url.forEach(function(url_definition) {
-    url_definition.docs = hostURL + url_definition.docs;
-    url_definition.base_path = hostURL + url_definition.base_path;
-  });
+  if (hostURL) {
 
-  config.basePath = hostURL;
-  config.host = hostURL.split('/')[2];
+    config.list_url.forEach(function(url_definition) {
+      url_definition.docs = hostURL + url_definition.docs;
+      url_definition.base_path = hostURL + url_definition.base_path;
+    });
 
+    config.basePath = hostURL;
+    config.host = hostURL.split('/')[2];
+  }
   return (config);
 }
 
@@ -177,10 +179,16 @@ var getApis = function(urls){
     var the_promises = [];
     urls.forEach(function(url){
         var def = q.defer();
+        console.log('Starting : ', url.base_path);
         request(url.docs, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 body = JSON.parse(body);
+                console.log('Finished : ', url.base_path);
                 def.resolve(body);
+            }
+            else {
+              console.log('Failed : ', url.base_path);
+              def.reject(body);
             }
         });
         the_promises.push(def.promise);
