@@ -9,10 +9,9 @@ var http = require('http');
 var url = require('url');
 
 function addHost(config) {
-  var hostURL = process.env.HOST_URL || config.get('hostURL');
-
+  var hostURL = process.env.HOST_URL;
+  
   if (hostURL) {
-
     config.list_url.forEach(function(url_definition) {
       url_definition.docs = hostURL + url_definition.docs;
       url_definition.base_path = hostURL + url_definition.base_path;
